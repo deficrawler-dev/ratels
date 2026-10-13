@@ -17,12 +17,14 @@
 }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
+
 body {
   margin: 0;
   background: var(--bg);
   color: var(--ink);
   font-family: "Courier New", monospace;
   min-height: 100svh;
+  isolation: isolate;
 }
 body::before {
   content: "";
@@ -38,17 +40,46 @@ body::after {
   position: fixed;
   inset: 0;
   background: repeating-linear-gradient(
-    transparent 0px, transparent 3px, #00000016 3px, #00000016 4px
+    transparent 0px,
+    transparent 3px,
+    #00000016 3px,
+    #00000016 4px
   );
   pointer-events: none;
   z-index: 5;
 }
 button, input { font: inherit; }
 button { cursor: pointer; }
-button:focus-visible, input:focus-visible, a:focus-visible {
+button:focus-visible,
+input:focus-visible {
   outline: 2px solid var(--amber);
   outline-offset: 5px;
 }
+button:disabled { cursor: default; }
+
+.ca-strip {
+  width: 100%;
+  min-height: 36px;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: #292115;
+  color: var(--amber);
+  font-size: 11px;
+}
+.ca-strip:hover { background: #352a1b; }
+#ca-display {
+  max-width: 65vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#ca-copy-label { flex-shrink: 0; }
+
 header, footer {
   max-width: 1200px;
   margin: auto;
@@ -77,11 +108,12 @@ header { border-bottom: 1px solid var(--line); }
   content: "● ";
   color: var(--amber);
 }
+
 main {
   max-width: 1150px;
   margin: auto;
   padding: 36px 28px;
-  min-height: calc(100svh - 170px);
+  min-height: calc(100svh - 206px);
   display: grid;
   align-items: center;
 }
@@ -107,7 +139,10 @@ h1 { font-size: clamp(48px, 6.5vw, 82px); }
 h2 { font-size: clamp(36px, 5vw, 60px); }
 h1 em { color: var(--amber); }
 p { line-height: 1.8; }
-.description { color: var(--muted); max-width: 440px; }
+.description {
+  color: var(--muted);
+  max-width: 440px;
+}
 .hero-image {
   width: 100%;
   max-height: 530px;
@@ -142,20 +177,35 @@ input::placeholder { color: #77705f; }
   transition: background .2s, transform .2s;
   margin-top: 18px;
 }
-.button:hover { background: #e7c184; transform: translateY(-2px); }
-.secondary { color: var(--amber); background: transparent; }
+.button:hover {
+  background: #e7c184;
+  transform: translateY(-2px);
+}
+.secondary {
+  color: var(--amber);
+  background: transparent;
+}
 .secondary:hover { background: #d7ac6310; }
 .form-note {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--muted);
-  letter-spacing: .5px;
+  letter-spacing: .3px;
 }
-.error { color: #e9a18a; font-size: 12px; min-height: 18px; }
-.center { text-align: center; max-width: 850px; margin: auto; width: 100%; }
+.error {
+  color: #e9a18a;
+  font-size: 12px;
+  min-height: 18px;
+}
+.center {
+  text-align: center;
+  max-width: 850px;
+  margin: auto;
+  width: 100%;
+}
 .center .description { margin: 0 auto 22px; }
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
   max-width: 760px;
   margin: 30px auto 20px;
@@ -164,7 +214,11 @@ input::placeholder { color: #77705f; }
   position: relative;
   padding: 12px 16px;
   border: 1px solid var(--line);
-  background: radial-gradient(ellipse at center, #bc8c3520, transparent 75%);
+  background: radial-gradient(
+    ellipse at center,
+    #bc8c3520,
+    transparent 75%
+  );
   color: var(--muted);
   transition: border-color .2s, transform .2s, background .2s;
 }
@@ -173,9 +227,22 @@ input::placeholder { color: #77705f; }
   background: #d7ac6310;
   transform: translateY(-4px);
 }
-.box img { width: 100%; height: 120px; object-fit: contain; display: block; }
-.box span { font-size: 10px; letter-spacing: 3px; display: block; margin-top: 8px; }
-.box:disabled { cursor: wait; opacity: .5; }
+.box img {
+  width: 100%;
+  height: 120px;
+  object-fit: contain;
+  display: block;
+}
+.box span {
+  font-size: 10px;
+  letter-spacing: 3px;
+  display: block;
+  margin-top: 8px;
+}
+.box:disabled {
+  cursor: wait;
+  opacity: .5;
+}
 .scene-image {
   display: block;
   width: min(100%, 360px);
@@ -189,7 +256,11 @@ input::placeholder { color: #77705f; }
   font-family: Georgia, serif;
   margin: 10px 0;
 }
-.claim-form { max-width: 490px; margin: auto; text-align: left; }
+.claim-form {
+  max-width: 490px;
+  margin: auto;
+  text-align: left;
+}
 .claim-form .button { width: 100%; }
 .journal {
   background: #b5a383 url("./journal-texture.png") center / cover;
@@ -200,7 +271,10 @@ input::placeholder { color: #77705f; }
   transform: rotate(-1deg);
   box-shadow: 0 15px 60px #0006;
 }
-.journal p { font-family: Georgia, serif; font-size: 23px; }
+.journal p {
+  font-family: Georgia, serif;
+  font-size: 23px;
+}
 .journal small { letter-spacing: 2px; }
 .ending-image {
   width: 100%;
@@ -208,8 +282,18 @@ input::placeholder { color: #77705f; }
   object-fit: contain;
   margin-bottom: 24px;
 }
-.divider { width: 60px; border: 0; border-top: 1px solid var(--amber); margin: 28px auto; }
-#whisper { min-height: 20px; font-size: 11px; color: var(--muted); letter-spacing: 1px; }
+.divider {
+  width: 60px;
+  border: 0;
+  border-top: 1px solid var(--amber);
+  margin: 28px auto;
+}
+#whisper {
+  min-height: 20px;
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 1px;
+}
 #announcement {
   position: absolute;
   width: 1px;
@@ -217,7 +301,16 @@ input::placeholder { color: #77705f; }
   overflow: hidden;
   clip-path: inset(50%);
 }
-footer { border-top: 1px solid var(--line); font-size: 9px; }
+footer {
+  border-top: 1px solid var(--line);
+  font-size: 9px;
+}
+noscript {
+  display: block;
+  padding: 20px;
+  text-align: center;
+  color: var(--amber);
+}
 @keyframes arrive {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
@@ -229,18 +322,27 @@ footer { border-top: 1px solid var(--line); font-size: 9px; }
 @media (max-width: 650px) {
   header, footer { padding: 20px; }
   main { padding: 30px 20px; }
-  .hero { grid-template-columns: 1fr; gap: 12px; }
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
   .hero-art { grid-row: 1; }
   .hero-image { height: 230px; }
   .hero-copy { text-align: center; }
   .hero-copy .description { margin: auto; }
   .hero-copy form { text-align: left; }
   h1 { font-size: 48px; }
-  .status { font-size: 8px; letter-spacing: 1px; }
+  .status {
+    font-size: 8px;
+    letter-spacing: 1px;
+  }
   .grid { gap: 8px; }
   .box { padding: 10px 4px; }
   .box img { height: 85px; }
-  .box span { letter-spacing: 1px; font-size: 9px; }
+  .box span {
+    letter-spacing: 1px;
+    font-size: 9px;
+  }
   .scene-image { height: 240px; }
   .journal { padding: 26px 22px; }
   footer { letter-spacing: 1px; }
@@ -256,10 +358,21 @@ footer { border-top: 1px solid var(--line); font-size: 9px; }
 </head>
 
 <body>
+
+<button class="ca-strip" id="copy-ca" type="button"
+  aria-label="Contract address not revealed yet">
+  <span>CA:</span>
+  <span id="ca-display">xxxxxxxxx</span>
+  <span id="ca-copy-label">⧉</span>
+</button>
+
 <header>
-  <button class="brand" id="home-button" aria-label="Return to the entrance">RATELS</button>
+  <button class="brand" id="home-button"
+    aria-label="Return to the entrance">RATELS</button>
   <span class="status">SIGNAL UNKNOWN</span>
 </header>
+
+<noscript>Enable JavaScript to enter the mystery.</noscript>
 
 <main>
   <section class="stage hero" id="entrance">
@@ -267,18 +380,32 @@ footer { border-top: 1px solid var(--line); font-size: 9px; }
       <p class="eyebrow">TRANSMISSION 001 / ORIGIN UNKNOWN</p>
       <h1>Looking for<br>the mystery <em>SOL?</em></h1>
       <p class="description">You don’t tell the ratel what to do.</p>
+
       <form id="entry-form">
         <label for="entry-wallet">Enter your mystery wallet</label>
-        <input id="entry-wallet" placeholder="Your public Solana wallet address"
-          required autocomplete="off" spellcheck="false" maxlength="44">
+        <input
+          id="entry-wallet"
+          placeholder="Your public Solana wallet address"
+          required
+          autocomplete="off"
+          autocapitalize="none"
+          spellcheck="false"
+          maxlength="44"
+          aria-describedby="entry-error entry-note">
         <p class="error" id="entry-error" role="alert"></p>
         <button class="button" type="submit">EXPLORE ↗</button>
-        <p class="form-note">Prototype journey. No live winnings or transfers.</p>
+        <p class="form-note" id="entry-note">
+          Prototype journey. No live winnings or transfers.
+        </p>
       </form>
     </div>
+
     <div class="hero-art">
-      <img class="hero-image" src="./homepage.png"
-        alt="A mysterious ratel emerging from darkness" fetchpriority="high">
+      <img
+        class="hero-image"
+        src="./homepage.png"
+        alt="A mysterious ratel emerging from darkness"
+        fetchpriority="high">
     </div>
   </section>
 
@@ -292,52 +419,81 @@ footer { border-top: 1px solid var(--line); font-size: 9px; }
 
   <section class="stage center" id="reveal" hidden>
     <p class="eyebrow" id="reveal-label"></p>
-    <img class="scene-image" src="./opened-mystery.png"
-      alt="An opened mystery chest glowing from within" loading="lazy">
+    <img
+      class="scene-image"
+      src="./opened-mystery.png"
+      alt="An opened mystery chest glowing from within"
+      loading="lazy">
     <h2 id="reveal-title"></h2>
     <p class="reward" id="reward-amount" hidden></p>
     <p class="description" id="reveal-message"></p>
-    <button class="button" id="reveal-next">CONTINUE →</button>
+    <button class="button" id="reveal-next" type="button">
+      CONTINUE →
+    </button>
   </section>
 
   <section class="stage center" id="claim" hidden>
     <p class="eyebrow">THE RATEL HAS SOMETHING FOR YOU</p>
-    <img class="scene-image" src="./smiling-ratel.png"
-      alt="The ratel wearing a knowing smile" loading="lazy">
+    <img
+      class="scene-image"
+      src="./smiling-ratel.png"
+      alt="The ratel wearing a knowing smile"
+      loading="lazy">
     <h2>Confirm your wallet.</h2>
     <p class="description" id="claim-message"></p>
+
     <form class="claim-form" id="claim-form">
       <label for="claim-wallet" id="claim-label"></label>
-      <input id="claim-wallet" required autocomplete="off" spellcheck="false">
+      <input
+        id="claim-wallet"
+        required
+        autocomplete="off"
+        autocapitalize="none"
+        spellcheck="false"
+        aria-describedby="claim-error claim-note">
       <p class="error" id="claim-error" role="alert"></p>
       <button class="button" type="submit">CONFIRM WALLET →</button>
-      <p class="form-note">
+      <p class="form-note" id="claim-note">
         Demo only. Your address stays in this page’s memory.
-        No claim is submitted, no ownership is verified, and no payout is sent.
+        No claim is submitted, no ownership is verified,
+        and no payout is sent.
       </p>
     </form>
   </section>
 
   <section class="stage center" id="mystery" hidden>
     <p class="eyebrow" id="mystery-label"></p>
-    <img class="scene-image" src="./staring-ratel.png"
-      alt="The ratel staring directly at you" loading="lazy">
+    <img
+      class="scene-image"
+      src="./staring-ratel.png"
+      alt="The ratel staring directly at you"
+      loading="lazy">
     <h2 id="mystery-title"></h2>
+
     <div class="journal">
       <small>FRAGMENT / DATE UNKNOWN</small>
       <p id="journal-message"></p>
     </div>
-    <button class="button secondary" id="mystery-next">FOLLOW THE RATEL →</button>
+
+    <button class="button secondary" id="mystery-next" type="button">
+      FOLLOW THE RATEL →
+    </button>
   </section>
 
   <section class="stage center" id="ending" hidden>
     <p class="eyebrow" id="ending-label">THE LAST PAGE IS MISSING</p>
-    <img class="ending-image" src="./disappearing-ratel.png"
-      alt="The ratel disappearing into an ancient tunnel" loading="lazy">
+    <img
+      class="ending-image"
+      src="./disappearing-ratel.png"
+      alt="The ratel disappearing into an ancient tunnel"
+      loading="lazy">
     <h2>Ratel is still evolving…</h2>
     <p class="description">Expect more from the mystery man.</p>
     <hr class="divider">
-    <button class="button secondary" id="dig-again">DIG AGAIN ↗</button>
+
+    <button class="button secondary" id="dig-again" type="button">
+      DIG AGAIN ↗
+    </button>
     <p class="form-note" id="ending-note"></p>
   </section>
 </main>
@@ -346,10 +502,14 @@ footer { border-top: 1px solid var(--line); font-size: 9px; }
   <span>RATELS.FUN / ORIGIN UNKNOWN</span>
   <span id="clock">--:--:--</span>
 </footer>
+
 <div id="announcement" role="status" aria-live="polite"></div>
 
 <script>
 "use strict";
+
+/* Replace xxxxxxxxx with your full CA after launch. */
+const RATELS_CA = "xxxxxxxxx";
 
 const $ = id => document.getElementById(id);
 
@@ -370,53 +530,69 @@ let entryWallet = "";
 let opening = false;
 let openingTimer = null;
 let whisperTimer = null;
+let caResetTimer = null;
 let lastOrder = "";
 
 function randomIndex(max) {
   const values = new Uint32Array(1);
   const limit = Math.floor(4294967296 / max) * max;
-  do { crypto.getRandomValues(values); } while (values[0] >= limit);
+
+  do {
+    crypto.getRandomValues(values);
+  } while (values[0] >= limit);
+
   return values[0] % max;
 }
 
 function shuffle(items) {
   const result = [...items];
+
   for (let i = result.length - 1; i > 0; i--) {
     const j = randomIndex(i + 1);
     [result[i], result[j]] = [result[j], result[i]];
   }
+
   return result;
 }
 
 function show(id) {
   clearInterval(whisperTimer);
+
   document.querySelectorAll(".stage").forEach(section => {
     section.hidden = section.id !== id;
   });
+
   const heading = $(id).querySelector("h1, h2");
+
   if (heading) {
     heading.setAttribute("tabindex", "-1");
     heading.focus({ preventScroll: true });
   }
-  window.scrollTo({ top: 0, behavior: "instant" });
-  if (id === "boxes") startWhispers();
+
+  window.scrollTo({ top: 0, behavior: "auto" });
+
+  if (id === "boxes") {
+    startWhispers();
+  }
 }
 
 function makeBoxes() {
-  let order = shuffle(discoveries.map((_, index) => index));
-
-  // Avoid repeating the previous arrangement when browser storage is available.
+  const order = shuffle(discoveries.map((_, index) => index));
   let previous = lastOrder;
-  try { previous = sessionStorage.getItem("ratels-order") || previous; }
-  catch (_) {}
+
+  try {
+    previous = sessionStorage.getItem("ratels-order") || previous;
+  } catch (_) {}
 
   if (order.join(",") === previous) {
     [order[0], order[1]] = [order[1], order[0]];
   }
 
   lastOrder = order.join(",");
-  try { sessionStorage.setItem("ratels-order", lastOrder); }
-  catch (_) {}
+
+  try {
+    sessionStorage.setItem("ratels-order", lastOrder);
+  } catch (_) {}
 
   $("box-grid").replaceChildren();
 
@@ -424,7 +600,10 @@ function makeBoxes() {
     const button = document.createElement("button");
     button.type = "button";
     button.className = "box";
-    button.setAttribute("aria-label", "Open mystery box " + (position + 1));
+    button.setAttribute(
+      "aria-label",
+      "Open mystery box " + (position + 1)
+    );
 
     const image = document.createElement("img");
     image.src = "./sealed-mystery.png";
@@ -435,7 +614,11 @@ function makeBoxes() {
     label.textContent = "UNKNOWN / 0" + (position + 1);
 
     button.append(image, label);
-    button.addEventListener("click", () => openBox(discoveries[discoveryIndex]));
+
+    button.addEventListener("click", () => {
+      openBox(discoveries[discoveryIndex]);
+    });
+
     $("box-grid").append(button);
   });
 }
@@ -447,8 +630,10 @@ function startWhispers() {
     "Everything about Ratels is mysterious.",
     "The ratel is still watching."
   ];
+
   let index = 0;
   $("whisper").textContent = messages[0];
+
   whisperTimer = setInterval(() => {
     index = (index + 1) % messages.length;
     $("whisper").textContent = messages[index];
@@ -457,53 +642,91 @@ function startWhispers() {
 
 function openBox(discovery) {
   if (opening) return;
+
   opening = true;
   selected = discovery;
+  clearInterval(whisperTimer);
 
-  document.querySelectorAll(".box").forEach(button => button.disabled = true);
+  document.querySelectorAll(".box").forEach(button => {
+    button.disabled = true;
+  });
+
   $("whisper").textContent = "Something moved inside.";
   $("announcement").textContent = "Opening the mystery box.";
 
+  const delay = matchMedia(
+    "(prefers-reduced-motion: reduce)"
+  ).matches ? 0 : 700;
+
   openingTimer = setTimeout(() => {
     opening = false;
+    openingTimer = null;
+
     $("reward-amount").hidden = discovery.type !== "reward";
     $("reveal-label").textContent = "THE SEAL IS BROKEN";
     $("reveal-next").textContent = "CONTINUE →";
 
     if (discovery.type === "reward") {
       $("reveal-title").textContent = "YEAH, YOU ARE LUCKY!";
-      $("reward-amount").textContent = discovery.amount + " " + discovery.currency;
-      $("reveal-message").textContent = "Prototype reveal — this prize is not live yet.";
+      $("reward-amount").textContent =
+        discovery.amount + " " + discovery.currency;
+      $("reveal-message").textContent =
+        "Prototype reveal — this prize is not live yet.";
       $("reveal-next").textContent = "FOLLOW THE RATEL →";
     } else {
       const content = {
-        preach: ["Preach.", "You don’t tell the ratel what to do."],
-        ratel: ["Only a ratel inside.", "Check what the ratel has for you."],
-        note: ["A sealed note.", "Not every holder holds a token. Some hold a secret."],
-        unknown: ["???", "Something is here. It hasn’t revealed itself yet."]
+        preach: [
+          "Preach.",
+          "You don’t tell the ratel what to do."
+        ],
+        ratel: [
+          "Only a ratel inside.",
+          "Check what the ratel has for you."
+        ],
+        note: [
+          "A sealed note.",
+          "Not every holder holds a token. Some hold a secret."
+        ],
+        unknown: [
+          "???",
+          "Something is here. It hasn’t revealed itself yet."
+        ]
       };
+
       const [title, message] = content[discovery.type];
       $("reveal-title").textContent = title;
       $("reveal-message").textContent = message;
     }
+
     show("reveal");
-  }, matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 700);
+  }, delay);
 }
 
+/* Basic format checks only; these do not verify wallet ownership. */
 function hasAddressFormat(address, currency) {
-  if (currency === "SOL") return /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(address);
-  if (currency === "USDT") return /^T[1-9A-HJ-NP-Za-km-z]{33}$/.test(address);
+  if (currency === "SOL") {
+    return /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(address);
+  }
+
+  if (currency === "USDT") {
+    return /^T[1-9A-HJ-NP-Za-km-z]{33}$/.test(address);
+  }
+
   return /^(?:EQ|UQ|kQ|0Q)[A-Za-z0-9_-]{46}$/.test(address)
     || /^(?:0|-1):[a-fA-F0-9]{64}$/.test(address);
 }
 
 $("entry-form").addEventListener("submit", event => {
   event.preventDefault();
+
   const address = $("entry-wallet").value.trim();
+
   if (!hasAddressFormat(address, "SOL")) {
-    $("entry-error").textContent = "Enter a public Solana address. Never enter a seed phrase.";
+    $("entry-error").textContent =
+      "Enter a public Solana address. Never enter a seed phrase.";
     return;
   }
+
   $("entry-error").textContent = "";
   entryWallet = address;
   show("boxes");
@@ -514,15 +737,25 @@ $("reveal-next").addEventListener("click", () => {
 
   if (selected.type === "reward") {
     $("claim-message").textContent =
-      "Confirm your wallet and expect your mystery " + selected.currency + ".";
-    $("claim-label").textContent = selected.network + " public wallet address";
-    $("claim-wallet").placeholder = selected.currency === "USDT"
-      ? "Tron address beginning with T"
-      : selected.currency === "TON"
-        ? "Your TON public wallet address"
-        : "Your Solana public wallet address";
-    $("claim-wallet").maxLength = selected.currency === "TON" ? 67 : 44;
-    $("claim-wallet").value = selected.currency === "SOL" ? entryWallet : "";
+      "Confirm your wallet and expect your mystery "
+      + selected.currency + ".";
+
+    $("claim-label").textContent =
+      selected.network + " public wallet address";
+
+    $("claim-wallet").placeholder =
+      selected.currency === "USDT"
+        ? "Tron address beginning with T"
+        : selected.currency === "TON"
+          ? "Your TON public wallet address"
+          : "Your Solana public wallet address";
+
+    $("claim-wallet").maxLength =
+      selected.currency === "TON" ? 67 : 44;
+
+    $("claim-wallet").value =
+      selected.currency === "SOL" ? entryWallet : "";
+
     $("claim-error").textContent = "";
     show("claim");
     return;
@@ -550,27 +783,34 @@ $("reveal-next").addEventListener("click", () => {
       "Your journey doesn’t end."
     ]
   };
+
   const [label, title, message] = scenes[selected.type];
+
   $("mystery-label").textContent = label;
   $("mystery-title").textContent = title;
   $("journal-message").textContent = message;
+
   show("mystery");
 });
 
 $("claim-form").addEventListener("submit", event => {
   event.preventDefault();
+
   if (!selected || selected.type !== "reward") return;
 
   const address = $("claim-wallet").value.trim();
+
   if (!hasAddressFormat(address, selected.currency)) {
     $("claim-error").textContent =
       "Check the address format for " + selected.network + ".";
     return;
   }
+
   $("claim-error").textContent = "";
   $("ending-label").textContent = "DEMO WALLET STEP COMPLETE";
   $("ending-note").textContent =
     "Prototype only. No claim was recorded and no funds were sent.";
+
   $("claim-wallet").value = "";
   show("ending");
 });
@@ -583,28 +823,83 @@ $("mystery-next").addEventListener("click", () => {
 
 $("dig-again").addEventListener("click", () => {
   selected = null;
+  $("claim-wallet").value = "";
   makeBoxes();
   show("boxes");
 });
 
 $("home-button").addEventListener("click", () => {
   clearTimeout(openingTimer);
+  openingTimer = null;
   opening = false;
   selected = null;
   entryWallet = "";
+
   $("entry-wallet").value = "";
   $("claim-wallet").value = "";
   $("entry-error").textContent = "";
+  $("claim-error").textContent = "";
+
   makeBoxes();
   show("entrance");
 });
 
-function updateClock() {
-  $("clock").textContent = new Date().toISOString().slice(11, 19) + " UTC";
+function shortCA() {
+  return RATELS_CA.length > 20
+    ? RATELS_CA.slice(0, 8) + "…" + RATELS_CA.slice(-8)
+    : RATELS_CA;
 }
+
+const caIsPlaceholder = /^x+$/i.test(RATELS_CA);
+
+$("ca-display").textContent = shortCA();
+$("copy-ca").title = caIsPlaceholder
+  ? "Contract address not revealed yet"
+  : RATELS_CA;
+
+$("copy-ca").setAttribute(
+  "aria-label",
+  caIsPlaceholder
+    ? "Contract address not revealed yet"
+    : "Copy Ratels contract address"
+);
+
+$("copy-ca").addEventListener("click", async () => {
+  clearTimeout(caResetTimer);
+
+  if (caIsPlaceholder) {
+    $("ca-copy-label").textContent = "NOT REVEALED YET";
+    $("announcement").textContent =
+      "The contract address has not been revealed yet.";
+  } else {
+    try {
+      await navigator.clipboard.writeText(RATELS_CA);
+      $("ca-copy-label").textContent = "COPIED";
+      $("announcement").textContent = "Contract address copied.";
+    } catch (_) {
+      $("ca-display").textContent = RATELS_CA;
+      $("ca-copy-label").textContent = "COPY MANUALLY";
+      $("announcement").textContent =
+        "Select and copy the full address shown above.";
+      return;
+    }
+  }
+
+  caResetTimer = setTimeout(() => {
+    $("ca-display").textContent = shortCA();
+    $("ca-copy-label").textContent = "⧉";
+  }, 3000);
+});
+
+function updateClock() {
+  $("clock").textContent =
+    new Date().toISOString().slice(11, 19) + " UTC";
+}
+
 updateClock();
 setInterval(updateClock, 1000);
 makeBoxes();
 </script>
+
 </body>
 </html>
