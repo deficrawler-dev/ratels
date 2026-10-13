@@ -1,1 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#10100d">
+<meta name="description" content="You don't tell the ratel what to do. Enter the mystery.">
+<title>RATELS — Enter the mystery</title>
 
+<style>
+:root {
+  --bg: #10100d;
+  --ink: #e8ddc5;
+  --muted: #9a927f;
+  --amber: #d7ac63;
+  --line: #d7ac6330;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Courier New", monospace;
+  min-height: 100svh;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: url("./terminal-background.png") center / 650px;
+  opacity: .28;
+  pointer-events: none;
+  z-index: -1;
+}
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    transparent 0px, transparent 3px, #00000016 3px, #00000016 4px
+  );
+  pointer-events: none;
+  z-index: 5;
+}
+button, input { font: inherit; }
+button { cursor: pointer; }
+button:focus-visible, input:focus-visible, a:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 5px;
+}
+header, footer {
+  max-width: 1200px;
+  margin: auto;
+  padding: 24px 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+header { border-bottom: 1px solid var(--line); }
+.brand {
+  background: none;
+  border: 0;
+  color: var(--ink);
+  font-size: 19px;
+  font-weight: bold;
+  letter-spacing: 7px;
+  padding: 8px 0;
+}
+.status, .eyebrow, footer {
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--muted);
+}
+.status::before {
+  content: "● ";
+  color: var(--amber);
+}
+main {
+  max-width: 1150px;
+  margin: auto;
+  padding: 36px 28px;
+  min-height: calc(100svh - 170px);
+  display: grid;
+  align-items: center;
+}
+.stage { animation: arrive .6s ease both; }
+.hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 35px;
+}
+.eyebrow {
+  color: var(--amber);
+  margin: 0 0 22px;
+  text-transform: uppercase;
+}
+h1, h2 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: normal;
+  line-height: 1.05;
+  margin: 0 0 24px;
+}
+h1 { font-size: clamp(48px, 6.5vw, 82px); }
+h2 { font-size: clamp(36px, 5vw, 60px); }
+h1 em { color: var(--amber); }
+p { line-height: 1.8; }
+.description { color: var(--muted); max-width: 440px; }
+.hero-image {
+  width: 100%;
+  max-height: 530px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 35px #b9853320);
+  animation: breathe 7s ease-in-out infinite;
+}
+label {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin: 26px 0 10px;
+}
+input {
+  width: 100%;
+  padding: 17px 15px;
+  color: var(--ink);
+  background: #00000030;
+  border: 1px solid var(--line);
+  border-radius: 0;
+  font-size: 13px;
+}
+input::placeholder { color: #77705f; }
+.button {
+  padding: 16px 24px;
+  background: var(--amber);
+  border: 1px solid var(--amber);
+  color: #15130e;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  transition: background .2s, transform .2s;
+  margin-top: 18px;
+}
+.button:hover { background: #e7c184; transform: translateY(-2px); }
+.secondary { color: var(--amber); background: transparent; }
+.secondary:hover { background: #d7ac6310; }
+.form-note {
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: .5px;
+}
+.error { color: #e9a18a; font-size: 12px; min-height: 18px; }
+.center { text-align: center; max-width: 850px; margin: auto; width: 100%; }
+.center .description { margin: 0 auto 22px; }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  max-width: 760px;
+  margin: 30px auto 20px;
+}
+.box {
+  position: relative;
+  padding: 12px 16px;
+  border: 1px solid var(--line);
+  background: radial-gradient(ellipse at center, #bc8c3520, transparent 75%);
+  color: var(--muted);
+  transition: border-color .2s, transform .2s, background .2s;
+}
+.box:hover {
+  border-color: var(--amber);
+  background: #d7ac6310;
+  transform: translateY(-4px);
+}
+.box img { width: 100%; height: 120px; object-fit: contain; display: block; }
+.box span { font-size: 10px; letter-spacing: 3px; display: block; margin-top: 8px; }
+.box:disabled { cursor: wait; opacity: .5; }
+.scene-image {
+  display: block;
+  width: min(100%, 360px);
+  height: 280px;
+  object-fit: contain;
+  margin: 0 auto 20px;
+}
+.reward {
+  color: var(--amber);
+  font-size: clamp(44px, 7vw, 76px);
+  font-family: Georgia, serif;
+  margin: 10px 0;
+}
+.claim-form { max-width: 490px; margin: auto; text-align: left; }
+.claim-form .button { width: 100%; }
+.journal {
+  background: #b5a383 url("./journal-texture.png") center / cover;
+  color: #282218;
+  padding: 36px;
+  max-width: 530px;
+  margin: 26px auto;
+  transform: rotate(-1deg);
+  box-shadow: 0 15px 60px #0006;
+}
+.journal p { font-family: Georgia, serif; font-size: 23px; }
+.journal small { letter-spacing: 2px; }
+.ending-image {
+  width: 100%;
+  max-height: 350px;
+  object-fit: contain;
+  margin-bottom: 24px;
+}
+.divider { width: 60px; border: 0; border-top: 1px solid var(--amber); margin: 28px auto; }
+#whisper { min-height: 20px; font-size: 11px; color: var(--muted); letter-spacing: 1px; }
+#announcement {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+footer { border-top: 1px solid var(--line); font-size: 9px; }
+@keyframes arrive {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes breathe {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-9px); }
+}
+@media (max-width: 650px) {
+  header, footer { padding: 20px; }
+  main { padding: 30px 20px; }
+  .hero { grid-template-columns: 1fr; gap: 12px; }
+  .hero-art { grid-row: 1; }
+  .hero-image { height: 230px; }
+  .hero-copy { text-align: center; }
+  .hero-copy .description { margin: auto; }
+  .hero-copy form { text-align: left; }
+  h1 { font-size: 48px; }
+  .status { font-size: 8px; letter-spacing: 1px; }
+  .grid { gap: 8px; }
+  .box { padding: 10px 4px; }
+  .box img { height: 85px; }
+  .box span { letter-spacing: 1px; font-size: 9px; }
+  .scene-image { height: 240px; }
+  .journal { padding: 26px 22px; }
+  footer { letter-spacing: 1px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+</style>
+</head>
+
+<body>
+<header>
+  <button class="brand" id="home-button" aria-label="Return to the entrance">RATELS</button>
+  <span class="status">SIGNAL UNKNOWN</span>
+</header>
+
+<main>
+  <section class="stage hero" id="entrance">
+    <div class="hero-copy">
+      <p class="eyebrow">TRANSMISSION 001 / ORIGIN UNKNOWN</p>
+      <h1>Looking for<br>the mystery <em>SOL?</em></h1>
+      <p class="description">You don’t tell the ratel what to do.</p>
+      <form id="entry-form">
+        <label for="entry-wallet">Enter your mystery wallet</label>
+        <input id="entry-wallet" placeholder="Your public Solana wallet address"
+          required autocomplete="off" spellcheck="false" maxlength="44">
+        <p class="error" id="entry-error" role="alert"></p>
+        <button class="button" type="submit">EXPLORE ↗</button>
+        <p class="form-note">Prototype journey. No live winnings or transfers.</p>
+      </form>
+    </div>
+    <div class="hero-art">
+      <img class="hero-image" src="./homepage.png"
+        alt="A mysterious ratel emerging from darkness" fetchpriority="high">
+    </div>
+  </section>
+
+  <section class="stage center" id="boxes" hidden>
+    <p class="eyebrow">NINE BOXES / NO INSTRUCTIONS</p>
+    <h2>Tap one.</h2>
+    <p class="description">The ratel left something inside.</p>
+    <div class="grid" id="box-grid"></div>
+    <p id="whisper">Their positions never stay the same.</p>
+  </section>
+
+  <section class="stage center" id="reveal" hidden>
+    <p class="eyebrow" id="reveal-label"></p>
+    <img class="scene-image" src="./opened-mystery.png"
+      alt="An opened mystery chest glowing from within" loading="lazy">
+    <h2 id="reveal-title"></h2>
+    <p class="reward" id="reward-amount" hidden></p>
+    <p class="description" id="reveal-message"></p>
+    <button class="button" id="reveal-next">CONTINUE →</button>
+  </section>
+
+  <section class="stage center" id="claim" hidden>
+    <p class="eyebrow">THE RATEL HAS SOMETHING FOR YOU</p>
+    <img class="scene-image" src="./smiling-ratel.png"
+      alt="The ratel wearing a knowing smile" loading="lazy">
+    <h2>Confirm your wallet.</h2>
+    <p class="description" id="claim-message"></p>
+    <form class="claim-form" id="claim-form">
+      <label for="claim-wallet" id="claim-label"></label>
+      <input id="claim-wallet" required autocomplete="off" spellcheck="false">
+      <p class="error" id="claim-error" role="alert"></p>
+      <button class="button" type="submit">CONFIRM WALLET →</button>
+      <p class="form-note">
+        Demo only. Your address stays in this page’s memory.
+        No claim is submitted, no ownership is verified, and no payout is sent.
+      </p>
+    </form>
+  </section>
+
+  <section class="stage center" id="mystery" hidden>
+    <p class="eyebrow" id="mystery-label"></p>
+    <img class="scene-image" src="./staring-ratel.png"
+      alt="The ratel staring directly at you" loading="lazy">
+    <h2 id="mystery-title"></h2>
+    <div class="journal">
+      <small>FRAGMENT / DATE UNKNOWN</small>
+      <p id="journal-message"></p>
+    </div>
+    <button class="button secondary" id="mystery-next">FOLLOW THE RATEL →</button>
+  </section>
+
+  <section class="stage center" id="ending" hidden>
+    <p class="eyebrow" id="ending-label">THE LAST PAGE IS MISSING</p>
+    <img class="ending-image" src="./disappearing-ratel.png"
+      alt="The ratel disappearing into an ancient tunnel" loading="lazy">
+    <h2>Ratel is still evolving…</h2>
+    <p class="description">Expect more from the mystery man.</p>
+    <hr class="divider">
+    <button class="button secondary" id="dig-again">DIG AGAIN ↗</button>
+    <p class="form-note" id="ending-note"></p>
+  </section>
+</main>
+
+<footer>
+  <span>RATELS.FUN / ORIGIN UNKNOWN</span>
+  <span id="clock">--:--:--</span>
+</footer>
+<div id="announcement" role="status" aria-live="polite"></div>
+
+<script>
+"use strict";
+
+const $ = id => document.getElementById(id);
+
+const discoveries = [
+  { type: "reward", amount: "0.02", currency: "SOL", network: "Solana" },
+  { type: "reward", amount: "2", currency: "USDT", network: "Tron / TRC20" },
+  { type: "reward", amount: "0.5", currency: "TON", network: "TON" },
+  { type: "preach" },
+  { type: "reward", amount: "0.1", currency: "SOL", network: "Solana" },
+  { type: "reward", amount: "0.2", currency: "SOL", network: "Solana" },
+  { type: "ratel" },
+  { type: "note" },
+  { type: "unknown" }
+];
+
+let selected = null;
+let entryWallet = "";
+let opening = false;
+let openingTimer = null;
+let whisperTimer = null;
+let lastOrder = "";
+
+function randomIndex(max) {
+  const values = new Uint32Array(1);
+  const limit = Math.floor(4294967296 / max) * max;
+  do { crypto.getRandomValues(values); } while (values[0] >= limit);
+  return values[0] % max;
+}
+
+function shuffle(items) {
+  const result = [...items];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = randomIndex(i + 1);
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+
+function show(id) {
+  clearInterval(whisperTimer);
+  document.querySelectorAll(".stage").forEach(section => {
+    section.hidden = section.id !== id;
+  });
+  const heading = $(id).querySelector("h1, h2");
+  if (heading) {
+    heading.setAttribute("tabindex", "-1");
+    heading.focus({ preventScroll: true });
+  }
+  window.scrollTo({ top: 0, behavior: "instant" });
+  if (id === "boxes") startWhispers();
+}
+
+function makeBoxes() {
+  let order = shuffle(discoveries.map((_, index) => index));
+
+  // Avoid repeating the previous arrangement when browser storage is available.
+  let previous = lastOrder;
+  try { previous = sessionStorage.getItem("ratels-order") || previous; }
+  catch (_) {}
+
+  if (order.join(",") === previous) {
+    [order[0], order[1]] = [order[1], order[0]];
+  }
+
+  lastOrder = order.join(",");
+  try { sessionStorage.setItem("ratels-order", lastOrder); }
+  catch (_) {}
+
+  $("box-grid").replaceChildren();
+
+  order.forEach((discoveryIndex, position) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "box";
+    button.setAttribute("aria-label", "Open mystery box " + (position + 1));
+
+    const image = document.createElement("img");
+    image.src = "./sealed-mystery.png";
+    image.alt = "";
+    image.loading = "lazy";
+
+    const label = document.createElement("span");
+    label.textContent = "UNKNOWN / 0" + (position + 1);
+
+    button.append(image, label);
+    button.addEventListener("click", () => openBox(discoveries[discoveryIndex]));
+    $("box-grid").append(button);
+  });
+}
+
+function startWhispers() {
+  const messages = [
+    "Their positions never stay the same.",
+    "You don’t tell the ratel what to do.",
+    "Everything about Ratels is mysterious.",
+    "The ratel is still watching."
+  ];
+  let index = 0;
+  $("whisper").textContent = messages[0];
+  whisperTimer = setInterval(() => {
+    index = (index + 1) % messages.length;
+    $("whisper").textContent = messages[index];
+  }, 6500);
+}
+
+function openBox(discovery) {
+  if (opening) return;
+  opening = true;
+  selected = discovery;
+
+  document.querySelectorAll(".box").forEach(button => button.disabled = true);
+  $("whisper").textContent = "Something moved inside.";
+  $("announcement").textContent = "Opening the mystery box.";
+
+  openingTimer = setTimeout(() => {
+    opening = false;
+    $("reward-amount").hidden = discovery.type !== "reward";
+    $("reveal-label").textContent = "THE SEAL IS BROKEN";
+    $("reveal-next").textContent = "CONTINUE →";
+
+    if (discovery.type === "reward") {
+      $("reveal-title").textContent = "YEAH, YOU ARE LUCKY!";
+      $("reward-amount").textContent = discovery.amount + " " + discovery.currency;
+      $("reveal-message").textContent = "Prototype reveal — this prize is not live yet.";
+      $("reveal-next").textContent = "FOLLOW THE RATEL →";
+    } else {
+      const content = {
+        preach: ["Preach.", "You don’t tell the ratel what to do."],
+        ratel: ["Only a ratel inside.", "Check what the ratel has for you."],
+        note: ["A sealed note.", "Not every holder holds a token. Some hold a secret."],
+        unknown: ["???", "Something is here. It hasn’t revealed itself yet."]
+      };
+      const [title, message] = content[discovery.type];
+      $("reveal-title").textContent = title;
+      $("reveal-message").textContent = message;
+    }
+    show("reveal");
+  }, matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 700);
+}
+
+function hasAddressFormat(address, currency) {
+  if (currency === "SOL") return /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(address);
+  if (currency === "USDT") return /^T[1-9A-HJ-NP-Za-km-z]{33}$/.test(address);
+  return /^(?:EQ|UQ|kQ|0Q)[A-Za-z0-9_-]{46}$/.test(address)
+    || /^(?:0|-1):[a-fA-F0-9]{64}$/.test(address);
+}
+
+$("entry-form").addEventListener("submit", event => {
+  event.preventDefault();
+  const address = $("entry-wallet").value.trim();
+  if (!hasAddressFormat(address, "SOL")) {
+    $("entry-error").textContent = "Enter a public Solana address. Never enter a seed phrase.";
+    return;
+  }
+  $("entry-error").textContent = "";
+  entryWallet = address;
+  show("boxes");
+});
+
+$("reveal-next").addEventListener("click", () => {
+  if (!selected) return;
+
+  if (selected.type === "reward") {
+    $("claim-message").textContent =
+      "Confirm your wallet and expect your mystery " + selected.currency + ".";
+    $("claim-label").textContent = selected.network + " public wallet address";
+    $("claim-wallet").placeholder = selected.currency === "USDT"
+      ? "Tron address beginning with T"
+      : selected.currency === "TON"
+        ? "Your TON public wallet address"
+        : "Your Solana public wallet address";
+    $("claim-wallet").maxLength = selected.currency === "TON" ? 67 : 44;
+    $("claim-wallet").value = selected.currency === "SOL" ? entryWallet : "";
+    $("claim-error").textContent = "";
+    show("claim");
+    return;
+  }
+
+  const scenes = {
+    ratel: [
+      "THE RATEL IS WATCHING",
+      "Your journey doesn’t end.",
+      "You have a fortune ahead."
+    ],
+    preach: [
+      "PREACH / NO ORDERS ACCEPTED",
+      "You don’t tell the ratel what to do.",
+      "Everything about Ratels is mysterious."
+    ],
+    note: [
+      "A PAGE WITHOUT AN AUTHOR",
+      "Some hold a secret.",
+      "The next page has been torn out."
+    ],
+    unknown: [
+      "TRANSMISSION INCOMPLETE",
+      "It hasn’t revealed itself yet.",
+      "Your journey doesn’t end."
+    ]
+  };
+  const [label, title, message] = scenes[selected.type];
+  $("mystery-label").textContent = label;
+  $("mystery-title").textContent = title;
+  $("journal-message").textContent = message;
+  show("mystery");
+});
+
+$("claim-form").addEventListener("submit", event => {
+  event.preventDefault();
+  if (!selected || selected.type !== "reward") return;
+
+  const address = $("claim-wallet").value.trim();
+  if (!hasAddressFormat(address, selected.currency)) {
+    $("claim-error").textContent =
+      "Check the address format for " + selected.network + ".";
+    return;
+  }
+  $("claim-error").textContent = "";
+  $("ending-label").textContent = "DEMO WALLET STEP COMPLETE";
+  $("ending-note").textContent =
+    "Prototype only. No claim was recorded and no funds were sent.";
+  $("claim-wallet").value = "";
+  show("ending");
+});
+
+$("mystery-next").addEventListener("click", () => {
+  $("ending-label").textContent = "THE LAST PAGE IS MISSING";
+  $("ending-note").textContent = "";
+  show("ending");
+});
+
+$("dig-again").addEventListener("click", () => {
+  selected = null;
+  makeBoxes();
+  show("boxes");
+});
+
+$("home-button").addEventListener("click", () => {
+  clearTimeout(openingTimer);
+  opening = false;
+  selected = null;
+  entryWallet = "";
+  $("entry-wallet").value = "";
+  $("claim-wallet").value = "";
+  $("entry-error").textContent = "";
+  makeBoxes();
+  show("entrance");
+});
+
+function updateClock() {
+  $("clock").textContent = new Date().toISOString().slice(11, 19) + " UTC";
+}
+updateClock();
+setInterval(updateClock, 1000);
+makeBoxes();
+</script>
+</body>
+</html>
